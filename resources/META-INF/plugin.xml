@@ -26,12 +26,18 @@
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-    </extensions>
-
     <actions>
         <!-- Add your actions here -->
     </actions>
+
+    <project-components>
+        <component>
+            <implementation-class>java.com.ezio.plugin.navigator.component.RestServiceNavigator</implementation-class>
+        </component>
+        <component>
+            <implementation-class>java.com.ezio.plugin.navigator.component.RestServiceProjectManager</implementation-class>
+        </component>
+    </project-components>
+
 
 </idea-plugin>
