@@ -16,14 +16,17 @@
   <idea-version since-build="193.5662" until-build="193.*"/>
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.java</depends>
-  <actions/>
+  <actions>
+    <action id="RefreshProjectAction" class="com.ezio.plugin.navigator.action.RefreshProjectAction" text="RefreshProjectAction" description="RefreshProjectAction">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
+  </actions>
   <project-components>
     <component>
       <implementation-class>com.ezio.plugin.navigator.component.RestServiceNavigator</implementation-class>
     </component>
     <component>
       <implementation-class>com.ezio.plugin.navigator.component.RestServiceProjectManager</implementation-class>
-      <interface-class>com.ezio.plugin.navigator.component.RestServiceProjectManager</interface-class>
     </component>
   </project-components>
 </idea-plugin>
