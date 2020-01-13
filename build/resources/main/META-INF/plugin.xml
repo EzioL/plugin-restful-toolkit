@@ -1,0 +1,29 @@
+<idea-plugin>
+  <id>com.your.company.unique.plugin.id</id>
+  <name>EzioRestfulToolkit</name>
+  <version>1.0-SNAPSHOT</version>
+  <vendor email="heyandamowang@qq.com" url="https://github.com/EzioL">Ezio</vendor>
+  <description>
+      Restful 服务开发辅助工具插件&lt;br&gt;
+      &lt;p&gt;-识别端口号&lt;/p&gt;
+      &lt;p&gt;-识别SpringWeb的接口，生成ServicesTree&lt;/p&gt;
+      &lt;p&gt;-ServicesTree的显示窗口跳转和搜索&lt;/p&gt;
+    
+    </description>
+  <change-notes>
+      Add change notes here.&lt;br&gt;
+      &lt;em&gt;most HTML tags may be used&lt;/em&gt;</change-notes>
+  <idea-version since-build="193.5662" until-build="193.*"/>
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.java</depends>
+  <actions/>
+  <project-components>
+    <component>
+      <implementation-class>com.ezio.plugin.navigator.component.RestServiceNavigator</implementation-class>
+    </component>
+    <component>
+      <implementation-class>com.ezio.plugin.navigator.component.RestServiceProjectManager</implementation-class>
+      <interface-class>com.ezio.plugin.navigator.component.RestServiceProjectManager</interface-class>
+    </component>
+  </project-components>
+</idea-plugin>

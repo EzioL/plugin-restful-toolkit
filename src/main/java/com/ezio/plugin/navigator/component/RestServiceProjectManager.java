@@ -1,6 +1,6 @@
 package com.ezio.plugin.navigator.component;
 
-import com.ezio.plugin.utils.ServiceUtils;
+import com.ezio.plugin.helper.ServiceHelper;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
@@ -28,7 +28,7 @@ public class RestServiceProjectManager implements com.intellij.openapi.component
 
     public java.util.List<RestServiceProject> getServiceProjectList() {
         return DumbService.getInstance(project).runReadActionInSmartMode(() ->
-                ServiceUtils.buildRestServiceProjectList(project));
+                ServiceHelper.buildRestServiceProjectList(project));
     }
 
 
