@@ -2,6 +2,8 @@ package com.ezio.plugin.navigator.domain;
 
 import com.intellij.openapi.module.Module;
 
+import java.util.List;
+
 /**
  * Here be dragons !
  *
@@ -16,14 +18,14 @@ public class RestServiceProject {
 
     private String appName;
 
-    private com.intellij.openapi.module.Module module;
+    private Module module;
 
     private String moduleName;
 
-    private java.util.List<RestServiceItem> restServiceItemList;
+    private List<RestServiceItem> restServiceItemList;
 
 
-    public RestServiceProject(String port, com.intellij.openapi.module.Module module, java.util.List<RestServiceItem> restServices) {
+    public RestServiceProject(String port, Module module, List<RestServiceItem> restServices) {
         this.port = port;
         this.moduleName = module.getName();
         appName = moduleName;

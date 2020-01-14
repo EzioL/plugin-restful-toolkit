@@ -1,6 +1,9 @@
 package com.ezio.plugin.navigator.component;
 
 import com.ezio.plugin.constant.Icons;
+import com.ezio.plugin.helper.ServiceHelper;
+import com.ezio.plugin.navigator.domain.RestServiceProject;
+import com.ezio.plugin.navigator.domain.node.RootNode;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -12,12 +15,15 @@ import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
+import com.intellij.ui.tree.StructureTreeModel;
 import com.intellij.ui.treeStructure.SimpleTree;
+import com.intellij.ui.treeStructure.SimpleTreeStructure;
 import com.intellij.util.DisposeAwareRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -35,6 +41,8 @@ public class RestServiceNavigator implements ProjectComponent {
     protected final Project project;
 
     private ToolWindowEx toolWindowEx;
+
+    protected RestServiceStructure serviceStructure;
 
     private SimpleTree simpleTree;
 
@@ -54,6 +62,7 @@ public class RestServiceNavigator implements ProjectComponent {
 //
 //        LOG.info(serviceProjectList.toString());
         //    initToolWindow();
+
         Optional.ofNullable(project)
                 .filter(e -> !e.isDisposed())
                 .filter(e -> !e.isInitialized())
@@ -83,6 +92,16 @@ public class RestServiceNavigator implements ProjectComponent {
         ContentManager contentManager = toolWindowEx.getContentManager();
         contentManager.addContent(content);
         contentManager.setSelectedContent(content, false);
+
+        RestServiceStructure restServiceStructure = new RestServiceStructure(project, simpleTree);
+        RootNode rootNode = new RootNode(null);
+        List<RestServiceProject> restServiceProjects = ServiceHelper.buildRestServiceProjectList(project);
+        rootNode.updateProjectNodes(restServiceProjects);
+
+        StructureTreeModel<SimpleTreeStructure> structureTreeModel =
+                new StructureTreeModel<>(new SimpleTreeStructure.Impl(rootNode), project);
+        rootNode.update();
+        System.out.println("1");
     }
 
 
