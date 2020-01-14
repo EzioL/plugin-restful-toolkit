@@ -3,9 +3,11 @@ package com.ezio.plugin.helper;
 import com.ezio.plugin.annotation.SpringRequestMethodAnnotation;
 import com.ezio.plugin.method.RequestPath;
 import com.ezio.plugin.utils.Optionals;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Here be dragons !
@@ -22,54 +25,62 @@ import java.util.stream.Collectors;
  */
 public class RequestMappingAnnotationHelper {
 
+    private static final ImmutableList<SpringRequestMethodAnnotation> SPRING_REQUEST_METHOD_ANNOTATIONS =
+            ImmutableList.copyOf(Lists.newArrayList(SpringRequestMethodAnnotation.values()));
+
+
     public static List<RequestPath> getRequestPaths(PsiClass psiClass) {
 
+        Optional<PsiAnnotation> optional = Optional.ofNullable(psiClass.getModifierList())
+                .flatMap(modifierList -> Lists.newArrayList(modifierList.getAnnotations()).stream()
+                        .filter(annotation ->
+                                SPRING_REQUEST_METHOD_ANNOTATIONS.stream()
+                                        .anyMatch(e -> Objects.equals(annotation.getQualifiedName(), e.getQualifiedName())))
+                        .findFirst());
 
-        return Optional.ofNullable(psiClass.getModifierList())
-                .map(modifierList -> {
-                    List<SpringRequestMethodAnnotation> annotationList = Lists.newArrayList(SpringRequestMethodAnnotation.values());
-
-                    return Lists.newArrayList(modifierList.getAnnotations()).stream()
-                            .filter(annotation ->
-                                    annotationList.stream()
-                                            .anyMatch(e -> Objects.equals(annotation.getQualifiedName(), e.getQualifiedName())))
-                            .findFirst();
-                })
-                .map(optional -> optional.map(e -> getRequestMappings(e, ""))
-                        .orElseGet(() -> {
-                            // 找它父类
-                            PsiClass superClass = psiClass.getSuperClass();
-                            if (Objects.nonNull(superClass) && !Objects.equals(superClass.getQualifiedName(), "java.lang.Object")) {
-                                return getRequestPaths(superClass);
-                            } else {
-                                return Lists.newArrayList(new RequestPath("/", null));
-                            }
-
-                        }))
-                .orElse(Lists.newArrayList());
+        if (optional.isPresent()) {
+            List<RequestPath> requestMappings = getRequestMappings(optional.get(), "");
+            return requestMappings;
+        }
+        PsiClass superClass = psiClass.getSuperClass();
+        if (Objects.nonNull(superClass) && !Objects.equals(superClass.getQualifiedName(), "java.lang.Object")) {
+            return getRequestPaths(superClass);
+        } else {
+            return Lists.newArrayList(new RequestPath("/", null));
+        }
     }
 
+
+    public static List<RequestPath> getRequestPaths(PsiMethod psiMethod) {
+
+        System.out.println("getRequestMappings: " + psiMethod.toString());
+
+        return Stream.of(psiMethod.getModifierList().getAnnotations())
+                .filter(annotation -> SPRING_REQUEST_METHOD_ANNOTATIONS.stream()
+                        .anyMatch(e -> Objects.equals(annotation.getQualifiedName(), e.getQualifiedName()))
+                )
+                .flatMap(annotation -> getRequestMappings(annotation, "/").stream())
+                .collect(Collectors.toList());
+    }
+
+
     private static List<RequestPath> getRequestMappings(PsiAnnotation annotation, String defaultValue) {
+        System.out.println("getRequestMappings: " + annotation.getQualifiedName());
+        Optional<SpringRequestMethodAnnotation> optional = SpringRequestMethodAnnotation.getByQualifiedName(annotation.getQualifiedName());
+        if (!optional.isPresent()) {
+            return Lists.newArrayList();
+        }
 
+        List<String> methodList = Optional.ofNullable(optional.get().getMainName()).map(Lists::newArrayList)
+                .orElseGet(() -> (ArrayList<String>) PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "method"));
 
-        return SpringRequestMethodAnnotation.getByQualifiedName(annotation.getQualifiedName())
-                .map(requestMethodAnnotation -> {
-                    // RequestMapping 如果没有指定具体method，不写的话，默认支持所有HTTP请求方法
-                    return Optional.ofNullable(requestMethodAnnotation.getMainName())
-                            .map(Lists::newArrayList)
-                            .orElseGet(() -> (ArrayList<String>) PsiAnnotationHelper
-                                    .getAnnotationAttributeValues(annotation, "method"));
-                })
-                .map(methodList -> {
-                    // 没有设置 value，默认方法名
-                    return Optionals.withSupplier(PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "value"),
-                            CollectionUtils::isNotEmpty, () -> PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "path"))
-                            .filter(CollectionUtils::isNotEmpty)
-                            .orElse(Lists.newArrayList(defaultValue))
-                            .stream()
-                            .flatMap(path -> methodList.stream().map(method -> new RequestPath(path, method)))
-                            .collect(Collectors.toList());
-                })
-                .orElse(Lists.newArrayList());
+        List<String> valueList = Optionals.ofPredicable(PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "value"), CollectionUtils::isNotEmpty)
+                .orElseGet(() -> Optionals.ofPredicable(PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "path"), CollectionUtils::isNotEmpty)
+                        .orElse(Lists.newArrayList()));
+
+        System.out.println("getRequestMappings: " + valueList);
+        return valueList.stream()
+                .flatMap(path -> methodList.stream().map(method -> new RequestPath(path, method)))
+                .collect(Collectors.toList());
     }
 }

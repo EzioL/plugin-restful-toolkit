@@ -21,13 +21,14 @@ public class ServiceHelper {
     public static final Logger LOG = Logger.getInstance(ServiceHelper.class);
 
 
-    public static java.util.List<RestServiceProject> buildRestServiceProjectList(com.intellij.openapi.project.Project project) {
+    public static List<RestServiceProject> buildRestServiceProjectList(com.intellij.openapi.project.Project project) {
 
-        System.out.println("buildRestServiceProjectList");
-        java.util.List<RestServiceProject> serviceProjectList = new ArrayList<>();
-        com.intellij.openapi.module.Module[] modules = ModuleManager.getInstance(project).getModules();
-        for (com.intellij.openapi.module.Module module : modules) {
-            // TODO: Ezio 2020/1/13  添加端口扫描
+        List<RestServiceProject> serviceProjectList = new ArrayList<>();
+        // 这里 project 也被当做module了 父子关系打平了
+        Module[] modules = ModuleManager.getInstance(project).getModules();
+        // TODO: Ezio 2020/1/13  搞一个处理module的类  端口，方法扫描
+        for (Module module : modules) {
+
             List<RestServiceItem> restServices = buildRestServiceItemList(module);
             if (restServices.size() > 0) {
                 serviceProjectList.add(new RestServiceProject(RestServiceProject.DEFAULT_PORT, module, restServices));
@@ -40,8 +41,6 @@ public class ServiceHelper {
 
     private static List<RestServiceItem> buildRestServiceItemList(Module module) {
         SpringResolver springResolver = new SpringResolver(module);
-        List<RestServiceItem> serviceItemList = springResolver.findAllSupportedServiceItemsInModule();
-        LOG.info(serviceItemList.toString());
-        return serviceItemList;
+        return springResolver.findAllSupportedServiceItemsInModule();
     }
 }

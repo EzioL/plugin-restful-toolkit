@@ -1,10 +1,14 @@
 package com.ezio.plugin.navigator.action;
 
-import com.ezio.plugin.navigator.component.RestServiceNavigator;
+import com.ezio.plugin.helper.ServiceHelper;
+import com.ezio.plugin.navigator.domain.RestServiceProject;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+
+import java.util.List;
 
 /**
  * Here be dragons !
@@ -20,8 +24,17 @@ public class RefreshProjectAction extends AnAction {
         Project project = CommonDataKeys.PROJECT.getData(e.getDataContext());
 
         assert project != null;
-        RestServiceNavigator servicesNavigator = RestServiceNavigator.getInstance(project);
-        servicesNavigator.initComponent();
-//        servicesNavigator.scheduleStructureUpdate();
+
+
+        List<RestServiceProject> serviceProjectList = getServiceProjectList(project);
+
+        System.out.println(serviceProjectList);
+    }
+
+
+
+    public List<RestServiceProject> getServiceProjectList(Project project ) {
+        return DumbService.getInstance(project).runReadActionInSmartMode(() ->
+                ServiceHelper.buildRestServiceProjectList(project));
     }
 }

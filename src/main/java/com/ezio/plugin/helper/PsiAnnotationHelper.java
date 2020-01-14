@@ -24,12 +24,10 @@ public class PsiAnnotationHelper {
         //一个值 class com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl
         //多个值  class com.intellij.psi.impl.source.tree.java.PsiArrayInitializerMemberValueImpl
         if (value instanceof PsiReferenceExpression) {
-
             values.add(value.getText());
         } else if (value instanceof PsiLiteralExpression) {
             Optional.ofNullable(((PsiLiteralExpression) value).getValue())
                     .ifPresent(e -> values.add(e.toString()));
-
         } else if (value instanceof PsiArrayInitializerMemberValue) {
             Stream.of(((PsiArrayInitializerMemberValue) value).getInitializers())
                     .forEach(e -> values.add(e.getText().replaceAll("\"", "")));

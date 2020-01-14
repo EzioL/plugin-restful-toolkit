@@ -6,15 +6,17 @@ package com.ezio.plugin.annotation;
  * @author: Ezio
  * created on 2020/1/13
  */
-public enum SpringControllerAnnotation implements PathMappingAnnotation {
+public enum SpringWebAnnotation implements PathMappingAnnotation {
     //
     CONTROLLER("Controller", "org.springframework.stereotype.Controller"),
-    REST_CONTROLLER("RestController", "org.springframework.web.bind.annotation.RestController");
+    REST_CONTROLLER("RestController", "org.springframework.web.bind.annotation.RestController"),
+    FEIGN_CLIENT("FeignClient", "org.springframework.cloud.openfeign.FeignClient"),
+    ;
 
     private String mainName;
     private String qualifiedName;
 
-    SpringControllerAnnotation(String mainName, String qualifiedName) {
+    SpringWebAnnotation(String mainName, String qualifiedName) {
         this.mainName = mainName;
         this.qualifiedName = qualifiedName;
     }

@@ -3,6 +3,8 @@ package com.ezio.plugin.resolver;
 
 import com.ezio.plugin.navigator.domain.RestServiceItem;
 
+import java.util.List;
+
 /**
  * Here be dragons !
  *
@@ -14,11 +16,11 @@ public interface ServiceResolver {
     /**
      * 获取module 中所有的服务列表
      */
-    java.util.List<RestServiceItem> findAllSupportedServiceItemsInModule();
+    List<RestServiceItem> findAllSupportedServiceItemsInModule();
 
     /**
      * 获取project 中所有的服务列表
      */
-    java.util.List<RestServiceItem> findAllSupportedServiceItemsInProject();
+    List<RestServiceItem> findAllSupportedServiceItemsInProject();
 
 }

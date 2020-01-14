@@ -1,7 +1,8 @@
 package com.ezio.plugin.resolver;
 
-import com.ezio.plugin.annotation.SpringControllerAnnotation;
+import com.ezio.plugin.annotation.SpringWebAnnotation;
 import com.ezio.plugin.helper.RequestMappingAnnotationHelper;
+import com.ezio.plugin.method.RequestPath;
 import com.ezio.plugin.navigator.domain.RestServiceItem;
 import com.ezio.plugin.utils.Optionals;
 import com.google.common.collect.Lists;
@@ -44,9 +45,9 @@ public class SpringResolver extends BaseServiceResolver {
 
 
     @Override
-    public List<RestServiceItem> getRestServiceItemList(com.intellij.openapi.project.Project project, GlobalSearchScope globalSearchScope) {
+    public List<RestServiceItem> getRestServiceItemList(Project project, GlobalSearchScope globalSearchScope) {
 
-        List<RestServiceItem> restServiceItemList = Stream.of(SpringControllerAnnotation.values())
+        List<RestServiceItem> restServiceItemList = Stream.of(SpringWebAnnotation.values())
                 .flatMap(controllerAnnotation ->
                         JavaAnnotationIndex.getInstance().get(controllerAnnotation.getMainName(), project, globalSearchScope).stream())
                 .flatMap(psiAnnotation -> {
@@ -60,13 +61,25 @@ public class SpringResolver extends BaseServiceResolver {
     }
 
     protected List<RestServiceItem> getServiceItemList(PsiClass psiClass) {
+        System.out.println("SpringClass: " + psiClass.getName());
 
         Optional<List<PsiMethod>> optional = Optionals.ofPredicable(Lists.newArrayList(psiClass.getMethods()), CollectionUtils::isNotEmpty);
+        if (!optional.isPresent()) {
+            return Lists.newArrayList();
+        }
+        List<RequestPath> classRequestPaths = RequestMappingAnnotationHelper.getRequestPaths(psiClass);
 
-        return optional.map(psiMethods -> psiMethods.stream().flatMap(psiMethod -> {
-            return RequestMappingAnnotationHelper.getRequestPaths(psiClass).stream()
-                    .map(requestPath -> createRestServiceItem(psiMethod, requestPath.getPath(), requestPath));
+        System.out.println("ClassRequestPath: " + classRequestPaths);
+        List<RestServiceItem> serviceItemList = optional.get().stream()
+                .flatMap(psiMethod -> {
+                    return RequestMappingAnnotationHelper.getRequestPaths(psiMethod).stream()
+                            .flatMap(methodRequestPath ->
+                                    classRequestPaths.stream().map(classRequestPath ->
+                                            createRestServiceItem(psiMethod, classRequestPath.getPath(), methodRequestPath)));
+                })
+                .collect(Collectors.toList());
+        System.out.println("RestServiceSize: " + serviceItemList.size());
+        return serviceItemList;
 
-        }).collect(Collectors.toList())).orElseGet(Lists::newArrayList);
     }
 }

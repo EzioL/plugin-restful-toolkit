@@ -8,6 +8,8 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Here be dragons !
  *
@@ -27,7 +29,7 @@ public class RestServiceProjectManager implements ProjectComponent {
         return ServiceManager.getService(project, RestServiceProjectManager.class);
     }
 
-    public java.util.List<RestServiceProject> getServiceProjectList() {
+    public List<RestServiceProject> getServiceProjectList() {
         return DumbService.getInstance(project).runReadActionInSmartMode(() ->
                 ServiceHelper.buildRestServiceProjectList(project));
     }

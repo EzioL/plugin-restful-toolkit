@@ -3,6 +3,7 @@ package com.ezio.plugin.resolver;
 import com.ezio.plugin.method.RequestPath;
 import com.ezio.plugin.navigator.domain.RestServiceItem;
 import com.ezio.plugin.utils.Optionals;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -21,8 +22,8 @@ import java.util.Optional;
  */
 public abstract class BaseServiceResolver implements ServiceResolver {
 
-    com.intellij.openapi.module.Module module;
-    com.intellij.openapi.project.Project project;
+    Module module;
+    Project project;
 
 
     public abstract List<RestServiceItem> getRestServiceItemList(Project project, GlobalSearchScope globalSearchScope);
@@ -68,6 +69,8 @@ public abstract class BaseServiceResolver implements ServiceResolver {
         RestServiceItem item = new RestServiceItem(psiMethod, requestMapping.getMethod(), requestPath);
 
         Optional.ofNullable(module).ifPresent(item::setModule);
+
+        System.out.println("createRestServiceItem: " + item.getMethod().name() + "  " + item.getUrl());
         return item;
     }
 
