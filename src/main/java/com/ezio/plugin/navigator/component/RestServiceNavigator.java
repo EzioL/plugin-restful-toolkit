@@ -1,13 +1,10 @@
 package com.ezio.plugin.navigator.component;
 
-import com.ezio.plugin.navigator.domain.RestServiceProject;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Here be dragons !
@@ -34,9 +31,9 @@ public class RestServiceNavigator implements ProjectComponent {
 
     @Override
     public void initComponent() {
-        List<RestServiceProject> serviceProjectList =
-                RestServiceProjectManager.getInstance(project).getServiceProjectList();
-
-        LOG.info(serviceProjectList.toString());
+//        List<RestServiceProject> serviceProjectList =
+////                RestServiceProjectManager.getInstance(project).getServiceProjectList();
+//
+//        LOG.info(serviceProjectList.toString());
     }
 }

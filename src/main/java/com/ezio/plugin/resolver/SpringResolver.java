@@ -68,8 +68,6 @@ public class SpringResolver extends BaseServiceResolver {
             return Lists.newArrayList();
         }
         List<RequestPath> classRequestPaths = RequestMappingAnnotationHelper.getRequestPaths(psiClass);
-
-        System.out.println("ClassRequestPath: " + classRequestPaths);
         List<RestServiceItem> serviceItemList = optional.get().stream()
                 .flatMap(psiMethod -> {
                     return RequestMappingAnnotationHelper.getRequestPaths(psiMethod).stream()

@@ -79,8 +79,18 @@ public class RequestMappingAnnotationHelper {
                         .orElse(Lists.newArrayList()));
 
         System.out.println("getRequestMappings: " + valueList);
-        return valueList.stream()
-                .flatMap(path -> methodList.stream().map(method -> new RequestPath(path, method)))
-                .collect(Collectors.toList());
+
+        // 如果是类上的注解 不存在方法
+        return Optionals.ofPredicable(methodList, CollectionUtils::isNotEmpty)
+                .map(e -> {
+                    return valueList.stream()
+                            .flatMap(path -> methodList.stream().map(method -> new RequestPath(path, method)))
+                            .collect(Collectors.toList());
+                })
+                .orElseGet(() -> {
+                    return valueList.stream()
+                            .map(path -> new RequestPath(path, null))
+                            .collect(Collectors.toList());
+                });
     }
 }
