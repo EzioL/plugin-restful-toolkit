@@ -13,6 +13,7 @@ import com.intellij.ui.treeStructure.*;
 import com.intellij.util.ui.tree.TreeUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,11 +33,23 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
     private final Tree myTree;
     private StructureTreeModel<RestServiceStructure> myTreeModel;
     private RootNode myRoot;
+    private final RestServiceProjectManager projectManager;
 
-    public RestServiceStructure(Project myProject, Tree myTree) {
+    public RestServiceStructure(Project myProject, RestServiceProjectManager projectManager, Tree myTree) {
         this.myProject = myProject;
+        this.projectManager = projectManager;
         this.myTree = myTree;
         configureTree(myTree);
+        init();
+    }
+    public void update() {
+        List<RestServiceProject> projects = RestServiceProjectManager.getInstance(myProject).getServiceProjectList();
+        updateProjects(projects);
+    }
+
+    private void updateProjects(List<RestServiceProject> projects) {
+
+
     }
 
     public void init() {
@@ -79,6 +92,29 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
     public void dispose() {
         this.myRoot = null;
     }
+
+    public static <T extends BaseSimpleNode> List<T> getSelectedNodes(SimpleTree tree, Class<T> nodeClass) {
+        List<T> filtered = new ArrayList<>();
+        for (SimpleNode node : getSelectedNodes(tree)) {
+            if ((nodeClass != null) && (!nodeClass.isInstance(node))) {
+                filtered.clear();
+                break;
+            }
+            //noinspection unchecked
+            filtered.add((T) node);
+        }
+        return filtered;
+    }
+
+    private static List<SimpleNode> getSelectedNodes(SimpleTree tree) {
+        return Optional.ofNullable(tree.getSelectionPaths())
+                .map(Lists::newArrayList)
+                .map(treePaths -> treePaths.stream()
+                        .map(tree::getNodeFor)
+                        .collect(Collectors.toList()))
+                .orElse(Lists.newArrayList());
+    }
+
 
     public abstract class BaseSimpleNode extends CachingSimpleNode {
         protected BaseSimpleNode(SimpleNode aParent) {

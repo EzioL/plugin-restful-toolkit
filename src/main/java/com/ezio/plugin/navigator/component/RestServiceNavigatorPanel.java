@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.Splitter;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.treeStructure.SimpleTree;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,15 +18,18 @@ import java.awt.*;
  * created on 2020/1/14
  */
 public class RestServiceNavigatorPanel extends SimpleToolWindowPanel implements DataProvider {
-    private SimpleTree simpleTree;
+
+    @Nullable
+    private RestServiceStructure myStructure;
+    private SimpleTree myTree;
 
     public RestServiceNavigatorPanel(SimpleTree tree) {
         super(true, true);
-        this.simpleTree = tree;
+        this.myTree = tree;
 
-        simpleTree.setBorder(BorderFactory.createLineBorder(new JBColor(new Color(11, 6, 39),
+        myTree.setBorder(BorderFactory.createLineBorder(new JBColor(new Color(11, 6, 39),
                 new Color(36, 38, 39))));
-        JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(simpleTree);
+        JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(myTree);
         scrollPane.setBorder(BorderFactory.createLineBorder(JBColor.RED));
 
         Splitter splitter = new Splitter(true, .5f);

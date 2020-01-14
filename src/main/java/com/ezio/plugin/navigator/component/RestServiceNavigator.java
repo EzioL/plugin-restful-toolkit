@@ -1,12 +1,10 @@
 package com.ezio.plugin.navigator.component;
 
 import com.ezio.plugin.constant.Icons;
-import com.ezio.plugin.helper.ServiceHelper;
-import com.ezio.plugin.navigator.domain.RestServiceProject;
-import com.ezio.plugin.navigator.domain.node.RootNode;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.wm.ToolWindowAnchor;
@@ -15,15 +13,12 @@ import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
-import com.intellij.ui.tree.StructureTreeModel;
 import com.intellij.ui.treeStructure.SimpleTree;
-import com.intellij.ui.treeStructure.SimpleTreeStructure;
 import com.intellij.util.DisposeAwareRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,33 +37,57 @@ public class RestServiceNavigator implements ProjectComponent {
 
     private ToolWindowEx toolWindowEx;
 
-    protected RestServiceStructure serviceStructure;
+    protected RestServiceStructure restServiceStructure;
 
     private SimpleTree simpleTree;
 
-    public RestServiceNavigator(Project project) {
+    private RestServiceProjectManager projectManager;
+
+    public RestServiceNavigator(Project project, RestServiceProjectManager projectManager) {
         this.project = project;
+        this.projectManager = projectManager;
+
     }
 
     public static RestServiceNavigator getInstance(@NotNull Project project) {
-        return ServiceManager.getService(project, RestServiceNavigator.class);
+        return project.getComponent(RestServiceNavigator.class);
+    }
+
+    private void initStructure() {
+        restServiceStructure = new RestServiceStructure(project, projectManager, simpleTree);
     }
 
 
+    public void scheduleStructureUpdate() {
+        scheduleStructureRequest(() -> restServiceStructure.update());
+
+    }
+    private void scheduleStructureRequest(Runnable r) {
+
+        DumbService.getInstance(project).smartInvokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (!toolWindowEx.isVisible()) {
+                    return;
+                }
+                if (!Optional.ofNullable(restServiceStructure).isPresent()) {
+                    initStructure();
+                }
+                r.run();
+            }
+        });
+
+    }
+
     @Override
     public void initComponent() {
-//        List<RestServiceProject> serviceProjectList =
-////                RestServiceProjectManager.getInstance(project).getServiceProjectList();
-//
-//        LOG.info(serviceProjectList.toString());
-        //    initToolWindow();
-
         Optional.ofNullable(project)
                 .filter(e -> !e.isDisposed())
                 .filter(e -> !e.isInitialized())
                 .ifPresent(e -> {
                     Runnable runnable = DisposeAwareRunnable.create(this::initToolWindow, project);
                     StartupManager.getInstance(project).registerPostStartupActivity(runnable);
+                    scheduleStructureUpdate();
                 });
 
     }
@@ -93,15 +112,6 @@ public class RestServiceNavigator implements ProjectComponent {
         contentManager.addContent(content);
         contentManager.setSelectedContent(content, false);
 
-        RestServiceStructure restServiceStructure = new RestServiceStructure(project, simpleTree);
-        RootNode rootNode = new RootNode(null);
-        List<RestServiceProject> restServiceProjects = ServiceHelper.buildRestServiceProjectList(project);
-        rootNode.updateProjectNodes(restServiceProjects);
-
-        StructureTreeModel<SimpleTreeStructure> structureTreeModel =
-                new StructureTreeModel<>(new SimpleTreeStructure.Impl(rootNode), project);
-        rootNode.update();
-        System.out.println("1");
     }
 
 

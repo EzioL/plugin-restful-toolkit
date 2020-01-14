@@ -2,6 +2,7 @@ package com.ezio.plugin.navigator.component;
 
 import com.ezio.plugin.helper.ServiceHelper;
 import com.ezio.plugin.navigator.domain.RestServiceProject;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbService;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author: Ezio
  * created on 2020/1/13
  */
-public class RestServiceProjectManager implements ProjectComponent {
+public class RestServiceProjectManager implements ProjectComponent , Disposable {
 
     protected final Project project;
 
@@ -35,4 +36,8 @@ public class RestServiceProjectManager implements ProjectComponent {
     }
 
 
+    @Override
+    public void dispose() {
+
+    }
 }
