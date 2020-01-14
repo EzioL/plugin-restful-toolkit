@@ -3,7 +3,6 @@ package com.ezio.plugin.helper;
 import com.ezio.plugin.navigator.domain.RestServiceItem;
 import com.ezio.plugin.navigator.domain.RestServiceProject;
 import com.ezio.plugin.resolver.SpringResolver;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 
@@ -17,9 +16,6 @@ import java.util.List;
  * created on 2020/1/13
  */
 public class ServiceHelper {
-
-    public static final Logger LOG = Logger.getInstance(ServiceHelper.class);
-
 
     public static List<RestServiceProject> buildRestServiceProjectList(com.intellij.openapi.project.Project project) {
 
