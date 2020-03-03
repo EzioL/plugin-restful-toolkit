@@ -48,12 +48,14 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
     }
 
     private void updateProjects(List<RestServiceProject> projects) {
-
-
+        myRoot.updateProjectNodes(projects);
     }
 
     public void init() {
         myRoot = new RootNode();
+        List<RestServiceProject> serviceProjectList = projectManager.getServiceProjectList();
+        myRoot.updateProjectNodes(serviceProjectList);
+
         myTreeModel = new StructureTreeModel<>(this, this);
         myTree.setModel(new AsyncTreeModel(myTreeModel, this));
         TreeUtil.expand(myTree, 1);

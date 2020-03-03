@@ -27,6 +27,17 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="API-List" anchor="right" icon="AllIcons.Toolwindows.ToolWindowStructure" secondary="true"
+                    factoryClass="com.ezio.plugin.navigator.apiView.ApiViewToolWindowFactory"/>
+
+        <projectService serviceInterface="com.ezio.plugin.navigator.apiView.ApiViewFactory"
+                        serviceImplementation="com.ezio.plugin.navigator.apiView.ApiViewFactoryImpl"/>
+
+        <selectInTarget implementation="com.ezio.plugin.navigator.apiView.ApiViewSelectInTarget"/>
+
+    </extensions>
+
     <actions>
         <!-- Add your actions here -->
         <action id="RefreshProjectAction" class="com.ezio.plugin.navigator.action.RefreshProjectAction"
