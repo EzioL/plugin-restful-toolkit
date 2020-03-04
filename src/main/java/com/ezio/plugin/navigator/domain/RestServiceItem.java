@@ -53,7 +53,7 @@ public class RestServiceItem implements NavigationItem {
     @Nullable
     @Override
     public String getName() {
-        return null;
+        return this.url;
     }
 
     @Nullable

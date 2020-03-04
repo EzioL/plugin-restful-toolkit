@@ -20,7 +20,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="192.4147"/>
+    <idea-version since-build="145"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -30,11 +30,12 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="API-List" anchor="right" icon="AllIcons.Toolwindows.ToolWindowStructure" secondary="true"
                     factoryClass="com.ezio.plugin.navigator.apiView.ApiViewToolWindowFactory"/>
-
+        
         <projectService serviceInterface="com.ezio.plugin.navigator.apiView.ApiViewFactory"
                         serviceImplementation="com.ezio.plugin.navigator.apiView.ApiViewFactoryImpl"/>
 
         <selectInTarget implementation="com.ezio.plugin.navigator.apiView.ApiViewSelectInTarget"/>
+
 
     </extensions>
 

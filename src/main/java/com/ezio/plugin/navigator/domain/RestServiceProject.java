@@ -70,4 +70,7 @@ public class RestServiceProject {
         this.moduleName = moduleName;
     }
 
+    public List<RestServiceItem> getRestServiceItemList() {
+        return restServiceItemList;
+    }
 }

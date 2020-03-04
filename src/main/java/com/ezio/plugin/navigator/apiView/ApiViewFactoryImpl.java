@@ -23,11 +23,13 @@ public class ApiViewFactoryImpl extends ApiViewFactoryEx {
     }
 
     public void initToolWindow(@NotNull ToolWindowEx toolWindow) {
-        myApiViewWrapper = new ApiViewWrapperImpl(myProject, toolWindow);
-        if (myRunWhenInitialized != null) {
-            myRunWhenInitialized.run();
-            myRunWhenInitialized = null;
-        }
+//        myApiViewWrapper = new ApiViewWrapperImpl(myProject, toolWindow);
+//        if (myRunWhenInitialized != null) {
+//            myRunWhenInitialized.run();
+//            myRunWhenInitialized = null;
+//        }
+
+
     }
 
 

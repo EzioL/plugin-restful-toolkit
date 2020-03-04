@@ -31,7 +31,7 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
 
     private final Project myProject;
     private final Tree myTree;
-    private StructureTreeModel<RestServiceStructure> myTreeModel;
+    private StructureTreeModel myTreeModel;
     private RootNode myRoot;
     private final RestServiceProjectManager projectManager;
 
@@ -39,11 +39,20 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
         this.myProject = myProject;
         this.projectManager = projectManager;
         this.myTree = myTree;
+        this.myRoot = new RootNode();
+        SimpleTreeStructure treeStructure = new SimpleTreeStructure.Impl(this.myRoot);
+        this.myTreeModel = new StructureTreeModel<>(treeStructure, this);
+        myTree.setModel(new AsyncTreeModel(this.myTreeModel, this));
+        TreeUtil.expand(myTree, 1);
         configureTree(myTree);
-        init();
+
+//        List<RestServiceProject> serviceProjectList = projectManager.getServiceProjectList();
+//        myRoot.updateProjectNodes(serviceProjectList);
     }
+
     public void update() {
-        List<RestServiceProject> projects = RestServiceProjectManager.getInstance(myProject).getServiceProjectList();
+//        List<RestServiceProject> projects = RestServiceProjectManager.getInstance(myProject).getServiceProjectList();
+        List<RestServiceProject> projects = projectManager.getServiceProjectList();
         updateProjects(projects);
     }
 
@@ -56,7 +65,8 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
         List<RestServiceProject> serviceProjectList = projectManager.getServiceProjectList();
         myRoot.updateProjectNodes(serviceProjectList);
 
-        myTreeModel = new StructureTreeModel<>(this, this);
+        SimpleTreeStructure treeStructure = new SimpleTreeStructure.Impl(myRoot);
+        myTreeModel = new StructureTreeModel<>(treeStructure, this);
         myTree.setModel(new AsyncTreeModel(myTreeModel, this));
         TreeUtil.expand(myTree, 1);
     }
@@ -74,7 +84,7 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
     public void updateUpTo(SimpleNode node) {
         SimpleNode each = node;
         while (each != null) {
-            myTreeModel.invalidate(each, false);
+            this.myTreeModel.invalidate(each, false);
             each = each.getParent();
         }
     }
@@ -175,17 +185,21 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
         public ProjectNode(SimpleNode aParent, RestServiceProject restServiceProject) {
             super(aParent);
             this.restServiceProject = restServiceProject;
+            this.serviceNodeList = Lists.newArrayList();
             getTemplatePresentation().setIcon(Icons.MODULE);
+            updateServiceNodes(restServiceProject.getRestServiceItemList());
         }
 
         private void updateServiceNodes(List<RestServiceItem> serviceItems) {
-            serviceNodeList.clear();
-            serviceNodeList = serviceItems.stream().map(e -> new ServiceNode(this, e))
+            this.serviceNodeList.clear();
+            List<ServiceNode> collect = serviceItems.stream().map(e -> new ServiceNode(this, e))
                     .collect(Collectors.toList());
+            this.serviceNodeList = collect;
         }
 
         @Override
         protected SimpleNode[] buildChildren() {
+
             return serviceNodeList.toArray(new SimpleNode[serviceNodeList.size()]);
         }
 
@@ -207,13 +221,13 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
 
         public ServiceNode(SimpleNode parent, RestServiceItem serviceItem) {
             super(parent);
-            restServiceItem = serviceItem;
+            this.restServiceItem = serviceItem;
             getTemplatePresentation().setIcon(Icons.METHOD.get(serviceItem.getMethod()));
         }
 
         @Override
         public String getName() {
-            return restServiceItem.getName();
+            return this.restServiceItem.getName();
         }
 
         @Override
