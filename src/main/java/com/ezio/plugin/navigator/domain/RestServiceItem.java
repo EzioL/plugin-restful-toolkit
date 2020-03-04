@@ -1,5 +1,6 @@
 package com.ezio.plugin.navigator.domain;
 
+import com.ezio.plugin.constant.Icons;
 import com.ezio.plugin.method.HttpMethod;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
@@ -9,6 +10,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.Optional;
 
 /**
@@ -56,20 +58,16 @@ public class RestServiceItem implements NavigationItem {
         return this.url;
     }
 
-    @Nullable
-    @Override
-    public ItemPresentation getPresentation() {
-        return null;
-    }
-
     @Override
     public void navigate(boolean requestFocus) {
-
+        if (navigationElement != null) {
+            navigationElement.navigate(requestFocus);
+        }
     }
 
     @Override
     public boolean canNavigate() {
-        return false;
+        return navigationElement.canNavigate();
     }
 
     @Override
@@ -132,5 +130,38 @@ public class RestServiceItem implements NavigationItem {
 
     public void setNavigationElement(Navigatable navigationElement) {
         this.navigationElement = navigationElement;
+    }
+
+
+    @Nullable
+    @Override
+    public ItemPresentation getPresentation() {
+        return new RestServiceItemPresentation();
+    }
+
+    private class RestServiceItemPresentation implements ItemPresentation {
+        @Nullable
+        @Override
+        public String getPresentableText() {
+            return url;
+        }
+
+        @Nullable
+        @Override
+        public String getLocationString() {
+            String fileName = psiElement.getContainingFile().getName();
+            String location = null;
+            if (psiElement instanceof PsiMethod) {
+                PsiMethod psiMethod = ((PsiMethod) psiElement);;
+                location = psiMethod.getContainingClass().getName().concat("#").concat(psiMethod.getName());
+            }
+            return "(" + location + ")";
+        }
+
+        @Nullable
+        @Override
+        public Icon getIcon(boolean unused) {
+            return Icons.METHOD.get(method);
+        }
     }
 }

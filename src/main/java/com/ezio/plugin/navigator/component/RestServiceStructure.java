@@ -11,7 +11,9 @@ import com.intellij.ui.tree.AsyncTreeModel;
 import com.intellij.ui.tree.StructureTreeModel;
 import com.intellij.ui.treeStructure.*;
 import com.intellij.util.ui.tree.TreeUtil;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +143,18 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
             }
             updateUpTo(this);
         }
+
+        @Nullable
+        @NonNls
+        String getActionId() {
+            return null;
+        }
+
+        @Nullable
+        @NonNls
+        String getMenuId() {
+            return null;
+        }
     }
 
     public class RootNode extends BaseSimpleNode {
@@ -212,6 +226,12 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
         public void handleSelection(SimpleTree tree) {
             super.handleSelection(tree);
         }
+
+        @Nullable
+        @Override
+        String getActionId() {
+            return "Ezio.RefreshProjectAction";
+        }
     }
 
 
@@ -243,6 +263,10 @@ public class RestServiceStructure extends SimpleTreeStructure implements Disposa
         @Override
         protected SimpleNode[] buildChildren() {
             return new SimpleNode[0];
+        }
+
+        public RestServiceItem getRestServiceItem() {
+            return restServiceItem;
         }
     }
 
