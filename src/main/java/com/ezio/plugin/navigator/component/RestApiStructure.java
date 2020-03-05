@@ -10,10 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.tree.AsyncTreeModel;
 import com.intellij.ui.tree.StructureTreeModel;
 import com.intellij.ui.treeStructure.*;
-import com.intellij.util.ui.tree.TreeUtil;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,36 +42,16 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
         SimpleTreeStructure treeStructure = new SimpleTreeStructure.Impl(this.myRoot);
         this.myTreeModel = new StructureTreeModel<>(treeStructure, this);
         myTree.setModel(new AsyncTreeModel(this.myTreeModel, this));
-        TreeUtil.expand(myTree, 1);
-        configureTree(myTree);
-
-//        List<RestServiceProject> serviceProjectList = projectManager.getServiceProjectList();
-//        myRoot.updateProjectNodes(serviceProjectList);
+        // TreeUtil.expand(myTree, 1);
     }
 
     public void update() {
-//        List<RestServiceProject> projects = RestServiceProjectManager.getInstance(myProject).getServiceProjectList();
         List<RestServiceProject> projects = projectManager.getServiceProjectList();
         updateProjects(projects);
     }
 
     private void updateProjects(List<RestServiceProject> projects) {
         myRoot.updateProjectNodes(projects);
-    }
-
-    public void init() {
-        myRoot = new RootNode();
-        List<RestServiceProject> serviceProjectList = projectManager.getServiceProjectList();
-        myRoot.updateProjectNodes(serviceProjectList);
-
-        SimpleTreeStructure treeStructure = new SimpleTreeStructure.Impl(myRoot);
-        myTreeModel = new StructureTreeModel<>(treeStructure, this);
-        myTree.setModel(new AsyncTreeModel(myTreeModel, this));
-        TreeUtil.expand(myTree, 1);
-    }
-
-    public Project getProject() {
-        return myProject;
     }
 
     public void updateFrom(SimpleNode node) {
@@ -95,11 +72,6 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
     @Override
     public Object getRootElement() {
         return myRoot;
-    }
-
-    private static void configureTree(final Tree tree) {
-        tree.setRootVisible(false);
-        tree.setShowsRootHandles(true);
     }
 
     @Override
@@ -143,18 +115,6 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
             }
             updateUpTo(this);
         }
-
-        @Nullable
-        @NonNls
-        String getActionId() {
-            return null;
-        }
-
-        @Nullable
-        @NonNls
-        String getMenuId() {
-            return null;
-        }
     }
 
     public class RootNode extends BaseSimpleNode {
@@ -173,7 +133,12 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
 
         @Override
         public String getName() {
-            return projectNodes.size() > 0 ? String.format("Found %d services ", projectNodes.size()) : null;
+            if (projectNodes.size() > 0) {
+                int sum = projectNodes.stream().map(ProjectNode::getServiceNodeList)
+                        .filter(Objects::nonNull).mapToInt(List::size).sum();
+                return "Found " + projectNodes.size() + " Module, " + sum + " APIs";
+            }
+            return null;
         }
 
 
@@ -219,7 +184,8 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
 
         @Override
         public String getName() {
-            return restServiceProject.getModuleName();
+            return restServiceProject.getModuleName() + " (port: " + restServiceProject.getPort()
+                    + ", API count: " + Optional.ofNullable(serviceNodeList).map(List::size).orElse(0) + ")";
         }
 
         @Override
@@ -227,10 +193,8 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
             super.handleSelection(tree);
         }
 
-        @Nullable
-        @Override
-        String getActionId() {
-            return "Ezio.RefreshProjectAction";
+        public List<ServiceNode> getServiceNodeList() {
+            return serviceNodeList;
         }
     }
 
@@ -257,7 +221,6 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
         }
 
         private void showDetail(RestServiceItem serviceItem) {
-            System.out.println("ServiceNode handleSelection");
         }
 
         @Override

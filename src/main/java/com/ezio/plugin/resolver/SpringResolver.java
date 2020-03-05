@@ -61,7 +61,6 @@ public class SpringResolver extends BaseServiceResolver {
     }
 
     protected List<RestServiceItem> getServiceItemList(PsiClass psiClass) {
-        System.out.println("SpringClass: " + psiClass.getName());
 
         Optional<List<PsiMethod>> optional = Optionals.ofPredicable(Lists.newArrayList(psiClass.getMethods()), CollectionUtils::isNotEmpty);
         if (!optional.isPresent()) {
@@ -76,7 +75,6 @@ public class SpringResolver extends BaseServiceResolver {
                                             createRestServiceItem(psiMethod, classRequestPath.getPath(), methodRequestPath)));
                 })
                 .collect(Collectors.toList());
-        System.out.println("RestServiceSize: " + serviceItemList.size());
         return serviceItemList;
 
     }

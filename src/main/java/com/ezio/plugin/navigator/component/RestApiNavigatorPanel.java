@@ -1,13 +1,15 @@
 package com.ezio.plugin.navigator.component;
 
-import com.ezio.plugin.navigator.domain.NodeDataContext;
+import com.ezio.plugin.navigator.action.TreePopupHandler;
 import com.ezio.plugin.navigator.domain.RestServiceItem;
 import com.ezio.plugin.utils.RestApiDataKeys;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.DataProvider;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.treeStructure.SimpleNode;
 import com.intellij.ui.treeStructure.SimpleTree;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NonNls;
@@ -16,8 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,47 +54,49 @@ public class RestApiNavigatorPanel extends SimpleToolWindowPanel implements Data
 //        splitter.setFirstComponent(scrollPane);
 //        //   splitter.setSecondComponent(myRestServiceDetail);
         setContent(scrollPane);
+        myTree.addMouseListener(new TreePopupHandler());
 
-        myTree.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (!(e.getSource() instanceof SimpleTree)) {
-                    return;
-                }
-                SimpleNode selectedNode = ((SimpleTree) e.getSource()).getSelectedNode();
-                if (!(selectedNode instanceof RestApiStructure.ServiceNode)) {
-                    return;
-                }
-                RestApiStructure.ServiceNode serviceNode = (RestApiStructure.ServiceNode) selectedNode;
-                AnAction action = actionManager.getAction("Ezio.GotoRequestMappingAction");
-
-
-                AnActionEvent newEvent =
-                        new AnActionEvent(null, new NodeDataContext(serviceNode.getRestServiceItem()), ActionPlaces.UNKNOWN, new Presentation(""),
-                                actionManager, 0);
-                action.actionPerformed(newEvent);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
+//        myTree.addMouseListener(new MouseListener() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                if (!(e.getSource() instanceof SimpleTree)) {
+//                    return;
+//                }
+//                SimpleNode selectedNode = ((SimpleTree) e.getSource()).getSelectedNode();
+//                if (!(selectedNode instanceof RestApiStructure.ServiceNode)) {
+//                    return;
+//                }
+//                RestApiStructure.ServiceNode serviceNode = (RestApiStructure.ServiceNode) selectedNode;
+//                AnAction action = actionManager.getAction("Ezio.GotoRequestMappingAction");
+//
+//
+//                AnActionEvent newEvent =
+//                        new AnActionEvent(null, new NodeDataContext(serviceNode.getRestServiceItem()), ActionPlaces.UNKNOWN, new Presentation(""),
+//                                actionManager, 0);
+//                action.actionPerformed(newEvent);
+//            }
+//
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//
+//            }
+//
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//
+//
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//
+//            }
+//        });
     }
 
 

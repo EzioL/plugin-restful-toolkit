@@ -3,6 +3,7 @@ package com.ezio.plugin.navigator.domain;
 import com.intellij.openapi.module.Module;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Here be dragons !
@@ -29,7 +30,9 @@ public class RestServiceProject {
         this.port = port;
         this.moduleName = module.getName();
         appName = moduleName;
-        this.restServiceItemList = restServices;
+        this.restServiceItemList = restServices.stream().peek(e -> {
+            e.setFullUrl("http://localhost:" + port + e.getUrl());
+        }).collect(Collectors.toList());
     }
 
     @Override

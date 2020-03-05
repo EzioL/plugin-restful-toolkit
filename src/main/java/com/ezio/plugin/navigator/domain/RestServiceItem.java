@@ -33,6 +33,8 @@ public class RestServiceItem implements NavigationItem {
 
     private String url;
 
+    private String fullUrl;
+
     private Navigatable navigationElement;
 
     public RestServiceItem(PsiElement psiElement, String requestMethod, String urlPath) {
@@ -132,6 +134,14 @@ public class RestServiceItem implements NavigationItem {
         this.navigationElement = navigationElement;
     }
 
+
+    public String getFullUrl() {
+        return fullUrl;
+    }
+
+    public void setFullUrl(String fullUrl) {
+        this.fullUrl = fullUrl;
+    }
 
     @Nullable
     @Override

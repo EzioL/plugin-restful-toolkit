@@ -36,9 +36,10 @@
         <!--刷新-->
         <action id="Ezio.RefreshProjectAction" class="com.ezio.plugin.navigator.action.RefreshProjectAction"
                 icon="AllIcons.Actions.Refresh"
-                text="RefreshProjectAction" description="RefreshProjectAction">
+                text="Refresh REST API " description="RefreshProjectAction">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+
         <action id="Ezio.GotoRequestMappingAction" class="com.ezio.plugin.navigator.action.GotoRequestMappingAction"
                 text="GotoRequestMappingAction"/>
 
@@ -46,6 +47,12 @@
             <reference id="Ezio.RefreshProjectAction"/>
             <separator/>
         </group>
+
+        <group id="Ezio.NavigatorServiceMenu">
+            <action id="Ezio.CopyUrlAction" class="com.ezio.plugin.navigator.action.CopyUrlAction"
+                    text="Copy Full Url" icon="AllIcons.Actions.Copy" description="CopyUrlAction"/>
+        </group>
+
 
     </actions>
 

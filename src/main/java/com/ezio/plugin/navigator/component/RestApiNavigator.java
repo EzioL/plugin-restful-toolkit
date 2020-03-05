@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -31,7 +32,7 @@ import java.util.Optional;
  * created on 2020/1/13
  */
 @State(name = "RestApiNavigator", storages = {@Storage(StoragePathMacros.WORKSPACE_FILE)})
-public class RestApiNavigator implements ProjectComponent ,PersistentStateComponent<RestApiNavigatorState>{
+public class RestApiNavigator implements ProjectComponent, PersistentStateComponent<RestApiNavigatorState> {
 
     public static final String TOOL_WINDOW_ID = "REST API Helper";
 
@@ -51,6 +52,10 @@ public class RestApiNavigator implements ProjectComponent ,PersistentStateCompon
         this.project = project;
         this.projectManager = projectManager;
 
+    }
+
+    public static RestApiNavigator getInstance(Project project) {
+        return project.getComponent(RestApiNavigator.class);
     }
 
     private void initStructure() {
@@ -107,6 +112,7 @@ public class RestApiNavigator implements ProjectComponent ,PersistentStateCompon
         ContentManager contentManager = toolWindowEx.getContentManager();
         contentManager.addContent(content);
         contentManager.setSelectedContent(content, false);
+        manager.hideToolWindow(TOOL_WINDOW_ID, true);
 
         project.getMessageBus().connect().subscribe(ToolWindowManagerListener.TOPIC, new ToolWindowManagerListener() {
             boolean wasVisible = false;
@@ -145,7 +151,9 @@ public class RestApiNavigator implements ProjectComponent ,PersistentStateCompon
 
     @Override
     public void loadState(@NotNull RestApiNavigatorState state) {
-        myState = state;
-        scheduleStructureUpdate();
+        if (Objects.nonNull(restApiStructure) && Objects.isNull(toolWindowEx)) {
+            myState = state;
+            scheduleStructureUpdate();
+        }
     }
 }

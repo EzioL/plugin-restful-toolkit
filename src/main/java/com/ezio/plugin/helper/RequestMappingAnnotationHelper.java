@@ -53,8 +53,6 @@ public class RequestMappingAnnotationHelper {
 
     public static List<RequestPath> getRequestPaths(PsiMethod psiMethod) {
 
-        System.out.println("getRequestMappings: " + psiMethod.toString());
-
         return Stream.of(psiMethod.getModifierList().getAnnotations())
                 .filter(annotation -> SPRING_REQUEST_METHOD_ANNOTATIONS.stream()
                         .anyMatch(e -> Objects.equals(annotation.getQualifiedName(), e.getQualifiedName()))
@@ -65,7 +63,6 @@ public class RequestMappingAnnotationHelper {
 
 
     private static List<RequestPath> getRequestMappings(PsiAnnotation annotation, String defaultValue) {
-        System.out.println("getRequestMappings: " + annotation.getQualifiedName());
         Optional<SpringRequestMethodAnnotation> optional = SpringRequestMethodAnnotation.getByQualifiedName(annotation.getQualifiedName());
         if (!optional.isPresent()) {
             return Lists.newArrayList();
@@ -77,8 +74,6 @@ public class RequestMappingAnnotationHelper {
         List<String> valueList = Optionals.ofPredicable(PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "value"), CollectionUtils::isNotEmpty)
                 .orElseGet(() -> Optionals.ofPredicable(PsiAnnotationHelper.getAnnotationAttributeValues(annotation, "path"), CollectionUtils::isNotEmpty)
                         .orElse(Lists.newArrayList()));
-
-        System.out.println("getRequestMappings: " + valueList);
 
         // 如果是类上的注解 不存在方法
         return Optionals.ofPredicable(methodList, CollectionUtils::isNotEmpty)
