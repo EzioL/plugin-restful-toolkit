@@ -28,16 +28,16 @@ import java.util.stream.Collectors;
  * @author: Ezio
  * created on 2020/1/14
  */
-public class RestServiceStructure extends SimpleTreeStructure implements Disposable {
+public class RestApiStructure extends SimpleTreeStructure implements Disposable {
 
 
     private final Project myProject;
     private final Tree myTree;
     private StructureTreeModel myTreeModel;
     private RootNode myRoot;
-    private final RestServiceProjectManager projectManager;
+    private final RestApiProjectManager projectManager;
 
-    public RestServiceStructure(Project myProject, RestServiceProjectManager projectManager, Tree myTree) {
+    public RestApiStructure(Project myProject, RestApiProjectManager projectManager, Tree myTree) {
         this.myProject = myProject;
         this.projectManager = projectManager;
         this.myTree = myTree;

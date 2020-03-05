@@ -40,7 +40,7 @@ public class Icons {
     }
 
     public static final Icon MODULE = AllIcons.Modules.SourceRoot;
-    public static final Icon Refresh = AllIcons.Actions.Refresh;
-    public static final Icon SERVICE = IconLoader.getIcon("/icons/service.png");
+
+    public static final Icon SERVICE = AllIcons.Toolwindows.ToolWindowStructure;
 
 }

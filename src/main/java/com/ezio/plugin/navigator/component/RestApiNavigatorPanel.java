@@ -2,7 +2,7 @@ package com.ezio.plugin.navigator.component;
 
 import com.ezio.plugin.navigator.domain.NodeDataContext;
 import com.ezio.plugin.navigator.domain.RestServiceItem;
-import com.ezio.plugin.utils.RestServiceDataKeys;
+import com.ezio.plugin.utils.RestApiDataKeys;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBColor;
@@ -27,11 +27,11 @@ import java.util.List;
  * @author: Ezio
  * created on 2020/1/14
  */
-public class RestServiceNavigatorPanel extends SimpleToolWindowPanel implements DataProvider {
+public class RestApiNavigatorPanel extends SimpleToolWindowPanel implements DataProvider {
 
     private SimpleTree myTree;
 
-    public RestServiceNavigatorPanel(SimpleTree tree) {
+    public RestApiNavigatorPanel(SimpleTree tree) {
         super(true, true);
         this.myTree = tree;
 
@@ -62,10 +62,10 @@ public class RestServiceNavigatorPanel extends SimpleToolWindowPanel implements 
                     return;
                 }
                 SimpleNode selectedNode = ((SimpleTree) e.getSource()).getSelectedNode();
-                if (!(selectedNode instanceof RestServiceStructure.ServiceNode)) {
+                if (!(selectedNode instanceof RestApiStructure.ServiceNode)) {
                     return;
                 }
-                RestServiceStructure.ServiceNode serviceNode = (RestServiceStructure.ServiceNode) selectedNode;
+                RestApiStructure.ServiceNode serviceNode = (RestApiStructure.ServiceNode) selectedNode;
                 AnAction action = actionManager.getAction("Ezio.GotoRequestMappingAction");
 
 
@@ -102,7 +102,7 @@ public class RestServiceNavigatorPanel extends SimpleToolWindowPanel implements 
     @Nullable
     public Object getData(@NotNull @NonNls String dataId) {
 
-        if (RestServiceDataKeys.SERVICE_ITEMS.is(dataId)) {
+        if (RestApiDataKeys.SERVICE_ITEMS.is(dataId)) {
             return extractServices();
         }
 
@@ -113,17 +113,17 @@ public class RestServiceNavigatorPanel extends SimpleToolWindowPanel implements 
     private List<RestServiceItem> extractServices() {
         List<RestServiceItem> result = Lists.newArrayList();
 
-        Collection<? extends RestServiceStructure.BaseSimpleNode> selectedNodes = getSelectedNodes(RestServiceStructure.BaseSimpleNode.class);
-        for (RestServiceStructure.BaseSimpleNode selectedNode : selectedNodes) {
-            if (selectedNode instanceof RestServiceStructure.ServiceNode) {
-                result.add(((RestServiceStructure.ServiceNode) selectedNode).restServiceItem);
+        Collection<? extends RestApiStructure.BaseSimpleNode> selectedNodes = getSelectedNodes(RestApiStructure.BaseSimpleNode.class);
+        for (RestApiStructure.BaseSimpleNode selectedNode : selectedNodes) {
+            if (selectedNode instanceof RestApiStructure.ServiceNode) {
+                result.add(((RestApiStructure.ServiceNode) selectedNode).restServiceItem);
             }
         }
         return result;
     }
 
-    private Collection<? extends RestServiceStructure.BaseSimpleNode> getSelectedNodes(Class<RestServiceStructure.BaseSimpleNode> aClass) {
-        return RestServiceStructure.getSelectedNodes(myTree, aClass);
+    private Collection<? extends RestApiStructure.BaseSimpleNode> getSelectedNodes(Class<RestApiStructure.BaseSimpleNode> aClass) {
+        return RestApiStructure.getSelectedNodes(myTree, aClass);
     }
 
 

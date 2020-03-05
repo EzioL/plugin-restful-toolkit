@@ -11,11 +11,11 @@ import java.util.List;
  * @author: Ezio
  * created on 2020/3/3
  */
-public class RestServiceDataKeys {
+public class RestApiDataKeys {
 
 
     public static final DataKey<List<RestServiceItem>> SERVICE_ITEMS = DataKey.create("SERVICE_ITEM");
 
-    private RestServiceDataKeys() {
+    private RestApiDataKeys() {
     }
 }

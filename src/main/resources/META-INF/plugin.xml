@@ -45,18 +45,16 @@
         <group id="Ezio.NavigatorToolbar">
             <reference id="Ezio.RefreshProjectAction"/>
             <separator/>
-            <reference id="Ezio.GotoRequestMappingAction"/>
-            <separator/>
         </group>
 
     </actions>
 
     <project-components>
         <component>
-            <implementation-class>com.ezio.plugin.navigator.component.RestServiceNavigator</implementation-class>
+            <implementation-class>com.ezio.plugin.navigator.component.RestApiNavigator</implementation-class>
         </component>
         <component>
-            <implementation-class>com.ezio.plugin.navigator.component.RestServiceProjectManager</implementation-class>
+            <implementation-class>com.ezio.plugin.navigator.component.RestApiProjectManager</implementation-class>
         </component>
     </project-components>
 

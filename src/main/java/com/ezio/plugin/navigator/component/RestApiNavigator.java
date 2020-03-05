@@ -14,7 +14,6 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.SimpleTree;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
@@ -26,37 +25,33 @@ import java.util.Optional;
  * @author: Ezio
  * created on 2020/1/13
  */
-public class RestServiceNavigator implements ProjectComponent {
+public class RestApiNavigator implements ProjectComponent {
 
-    public static final String TOOL_WINDOW_ID = "RestService";
+    public static final String TOOL_WINDOW_ID = "REST API Helper";
 
     protected final Project project;
 
     private ToolWindowEx toolWindowEx;
 
-    protected RestServiceStructure restServiceStructure;
+    protected RestApiStructure restApiStructure;
 
     private SimpleTree simpleTree;
 
-    private RestServiceProjectManager projectManager;
+    private RestApiProjectManager projectManager;
 
-    public RestServiceNavigator(Project project, RestServiceProjectManager projectManager) {
+    public RestApiNavigator(Project project, RestApiProjectManager projectManager) {
         this.project = project;
         this.projectManager = projectManager;
 
     }
 
-    public static RestServiceNavigator getInstance(@NotNull Project project) {
-        return project.getComponent(RestServiceNavigator.class);
-    }
-
     private void initStructure() {
-        restServiceStructure = new RestServiceStructure(project, projectManager, simpleTree);
+        restApiStructure = new RestApiStructure(project, projectManager, simpleTree);
     }
 
 
     public void scheduleStructureUpdate() {
-        scheduleStructureRequest(() -> restServiceStructure.update());
+        scheduleStructureRequest(() -> restApiStructure.update());
 
     }
 
@@ -66,7 +61,7 @@ public class RestServiceNavigator implements ProjectComponent {
             if (!toolWindowEx.isVisible()) {
                 return;
             }
-            if (!Optional.ofNullable(restServiceStructure).isPresent()) {
+            if (!Optional.ofNullable(restApiStructure).isPresent()) {
                 initStructure();
             }
             r.run();
@@ -98,7 +93,7 @@ public class RestServiceNavigator implements ProjectComponent {
                 ToolWindowAnchor.RIGHT, project, true);
         toolWindowEx.setIcon(Icons.SERVICE);
 
-        JPanel panel = new RestServiceNavigatorPanel(simpleTree);
+        JPanel panel = new RestApiNavigatorPanel(simpleTree);
         ContentFactory contentFactory = ServiceManager.getService(ContentFactory.class);
         Content content = contentFactory.createContent(panel, "", false);
         ContentManager contentManager = toolWindowEx.getContentManager();
@@ -107,6 +102,7 @@ public class RestServiceNavigator implements ProjectComponent {
 
         project.getMessageBus().connect().subscribe(ToolWindowManagerListener.TOPIC, new ToolWindowManagerListener() {
             boolean wasVisible = false;
+
             @Override
             public void stateChanged() {
                 if (toolWindowEx.isDisposed()) {
