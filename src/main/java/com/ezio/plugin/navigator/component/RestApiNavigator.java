@@ -2,10 +2,12 @@ package com.ezio.plugin.navigator.component;
 
 import com.ezio.plugin.constant.Icons;
 import com.ezio.plugin.utils.ToolkitUtil;
-import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.ide.util.treeView.TreeState;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
@@ -14,6 +16,9 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.ui.treeStructure.SimpleTree;
+import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.tree.TreeSelectionModel;
@@ -25,7 +30,8 @@ import java.util.Optional;
  * @author: Ezio
  * created on 2020/1/13
  */
-public class RestApiNavigator implements ProjectComponent {
+@State(name = "RestApiNavigator", storages = {@Storage(StoragePathMacros.WORKSPACE_FILE)})
+public class RestApiNavigator implements ProjectComponent ,PersistentStateComponent<RestApiNavigatorState>{
 
     public static final String TOOL_WINDOW_ID = "REST API Helper";
 
@@ -38,6 +44,8 @@ public class RestApiNavigator implements ProjectComponent {
     private SimpleTree simpleTree;
 
     private RestApiProjectManager projectManager;
+
+    RestApiNavigatorState myState = new RestApiNavigatorState();
 
     public RestApiNavigator(Project project, RestApiProjectManager projectManager) {
         this.project = project;
@@ -119,4 +127,25 @@ public class RestApiNavigator implements ProjectComponent {
     }
 
 
+    @Nullable
+    @Override
+    public RestApiNavigatorState getState() {
+        ApplicationManager.getApplication().assertIsDispatchThread();
+
+        if (restApiStructure != null) {
+            try {
+                myState.treeState = new Element("root");
+                TreeState.createOn(simpleTree).writeExternal(myState.treeState);
+            } catch (WriteExternalException ignored) {
+
+            }
+        }
+        return myState;
+    }
+
+    @Override
+    public void loadState(@NotNull RestApiNavigatorState state) {
+        myState = state;
+        scheduleStructureUpdate();
+    }
 }

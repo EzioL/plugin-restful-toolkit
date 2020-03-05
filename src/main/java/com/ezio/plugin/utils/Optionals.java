@@ -13,11 +13,11 @@ public final class Optionals {
     public Optionals() {
     }
 
-    public static <T> Optional<T> ofPredicable(T value, java.util.function.Predicate<T> predicate) {
+    public static <T> Optional<T> ofPredicable(T value, Predicate<T> predicate) {
         return Optional.ofNullable(value).filter(predicate);
     }
 
-    public static <T> Optional<T> withSupplier(T value, java.util.function.Predicate<T> predicate, Supplier<T> supplier) {
+    public static <T> Optional<T> withSupplier(T value, Predicate<T> predicate, Supplier<T> supplier) {
         return Optional.ofNullable(value).filter(predicate).map((e) -> supplier.get());
     }
 }
