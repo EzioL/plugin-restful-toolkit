@@ -136,7 +136,7 @@ public class RestApiStructure extends SimpleTreeStructure implements Disposable 
             if (projectNodes.size() > 0) {
                 int sum = projectNodes.stream().map(ProjectNode::getServiceNodeList)
                         .filter(Objects::nonNull).mapToInt(List::size).sum();
-                return "Found " + projectNodes.size() + " Module, " + sum + " APIs";
+                return "Found " + projectNodes.size() + " Module, " + sum + " API";
             }
             return null;
         }
