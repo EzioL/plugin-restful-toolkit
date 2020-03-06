@@ -1,7 +1,7 @@
 package com.ezio.plugin.navigator.component;
 
 import com.ezio.plugin.constant.Icons;
-import com.ezio.plugin.utils.ToolkitUtil;
+import com.ezio.plugin.utils.ToolkitUtils;
 import com.intellij.ide.util.treeView.TreeState;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.*;
@@ -84,7 +84,7 @@ public class RestApiNavigator implements ProjectComponent, PersistentStateCompon
 
     @Override
     public void initComponent() {
-        ToolkitUtil.runWhenInitialized(project, () -> {
+        ToolkitUtils.runWhenInitialized(project, () -> {
             if (!project.isDisposed()) {
                 initToolWindow();
             }

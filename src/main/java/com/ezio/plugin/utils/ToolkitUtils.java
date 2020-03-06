@@ -22,10 +22,12 @@ import java.util.Map;
  * @author: Ezio
  * created on 2020/3/3
  */
-public class ToolkitUtil {
+public class ToolkitUtils {
     public static void runWhenInitialized(final Project project, final Runnable r) {
 
-        if (project.isDisposed()) return;
+        if (project.isDisposed()) {
+            return;
+        }
 
         if (isNoBackgroundMode()) {
             r.run();
