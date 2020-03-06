@@ -51,6 +51,9 @@
         <group id="Ezio.NavigatorServiceMenu">
             <action id="Ezio.CopyUrlAction" class="com.ezio.plugin.navigator.action.CopyUrlAction"
                     text="Copy Full Url" icon="AllIcons.Actions.Copy" description="CopyUrlAction"/>
+
+            <action id="Ezio.CopyAsCurlAction" class="com.ezio.plugin.navigator.action.curl.CopyAsCurlAction"
+                    text="Copy as cURL" description="CopyAsCurlAction"/>
         </group>
 
 
