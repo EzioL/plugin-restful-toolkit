@@ -22,12 +22,12 @@ public enum SpringRequestParamAnnotation implements PathMappingAnnotation {
 
     @Override
     public String getMainName() {
-        return null;
+        return mainName;
     }
 
     @Override
     public String getQualifiedName() {
-        return null;
+        return qualifiedName;
     }
 
 
